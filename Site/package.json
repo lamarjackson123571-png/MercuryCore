@@ -1,13 +1,13 @@
 {
 	"name": "mercurycore",
 	"scripts": {
-		"dev": "bun x -b vite dev",
-		"build": "bun x -b vite build",
+		"dev": "vite dev",
+		"build": "vite build",
 		"format": "biome format src --write",
 		"lint": "biome lint src",
-		"prod": "bun i -p && bun x -b vite build",
-		"preview": "bun x -b vite preview",
-		"buildview": "bun x -b vite build && bun x -b vite preview",
+		"prod": "vite build",
+		"preview": "vite preview",
+		"buildview": "vite build && vite preview",
 		"check": "svelte-check --tsconfig ./tsconfig.json",
 		"check:watch": "svelte-check --tsconfig ./tsconfig.json --watch",
 		"serve": "bun x pm2 start",

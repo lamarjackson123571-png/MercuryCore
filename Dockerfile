@@ -2,13 +2,12 @@
 FROM oven/bun:1 AS base
 WORKDIR /app
 
-# Step 2: Install workspace and site dependencies
+# Step 2: Install dependencies
 FROM base AS install
 
-# Copy local dependencies first to resolve file:../Economy/client
-COPY Economy/client /app/Economy/client
-
-# Copy package metadata
+# Copy shared modules first
+COPY Economy /app/Economy
+COPY Assets /app/Assets
 COPY Site/package.json Site/bun.lock* /app/Site/
 
 WORKDIR /app/Site
@@ -18,10 +17,8 @@ RUN bun install
 FROM base AS release
 WORKDIR /app
 
-# Copy installed dependencies from install stage
+# Copy installed node_modules and full repository source
 COPY --from=install /app/Site/node_modules /app/Site/node_modules
-
-# Copy full application source files preserving project tree
 COPY Economy /app/Economy
 COPY Assets /app/Assets
 COPY Site /app/Site
@@ -29,15 +26,16 @@ COPY mercury.core.ts /app/mercury.core.ts
 
 WORKDIR /app/Site
 
-# Fallback environment variables required during SvelteKit build step
+# Fallback environment variables for SvelteKit static checks
 ENV NODE_ENV=production
 ENV PORT=3000
+ENV ORIGIN=http://localhost:3000
 
-# Generate SvelteKit routes and types
+# Sync SvelteKit routes and types
 RUN bunx svelte-kit sync
 
-# Build production bundle
-RUN bun run build
+# Run Vite build directly using bunx with verbose reporting
+RUN bunx vite build
 
 # Step 4: Run Node adapter output
 EXPOSE 3000

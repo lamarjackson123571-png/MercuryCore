@@ -16,5 +16,10 @@ export default defineConfig({
 		sveltekit(),
 		devtoolsJson(),
 	],
-	ssr: { noExternal: ["d3-interpolate"] },
+	ssr: { 
+		noExternal: ["d3-interpolate", "@threlte/core", "@threlte/extras"] 
+	},
+	build: {
+		chunkSizeWarningLimit: 2000
+	}
 })
